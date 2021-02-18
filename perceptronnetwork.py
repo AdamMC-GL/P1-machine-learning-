@@ -12,16 +12,13 @@ class Perceptronnetwork:
         for layer in layers:
             self.pnetwork.append(perceptronlayer.Perceptronlayer(layer))
 
-    def feed_forward(self, input):
+    def feed_forward(self, inputs):
         """Given an input, gives the output of the network.
         The input is used to calculate the output of the first layer, and those
         outputs are used as the input for the next until the last layer's output is calculated and returned"""
         for layer in self.pnetwork:
-            output = []
-            for perceptron in layer.layer:
-                output.append(perceptron.activate(input))
-            input = output
-        return input
+            inputs = layer.activate(inputs)  # each input of a layer gives an output that becomes the input of the next layer
+        return inputs
 
     def empty_network(self, layer_amounts, first_layer_inputs=2):
         """Creates an empty network, a network with all weights and biases set on 0.
@@ -53,9 +50,14 @@ if __name__ == "__main__":
                                  [[[0.5, 0.5], -1]]])
 
     print("XOR port: ")
-    input_combinations = [[False, False], [False, True], [True, False], [True, True]]
+    input_combinations = [[0, 0], [0, 1], [1, 0], [1, 1]]
     for i in input_combinations:
         print(xor_port.feed_forward(i))
+
+    assert xor_port.feed_forward([0, 0]) == [0], "Should be 0"
+    assert xor_port.feed_forward([0, 1]) == [1], "Should be 1"
+    assert xor_port.feed_forward([1, 0]) == [1], "Should be 1"
+    assert xor_port.feed_forward([1, 1]) == [0], "Should be 0"
 
     print("Half adder: ")
     halfadder = Perceptronnetwork([[[[-1, -1], 1], [[0.5, 0.5], -0.5]],
@@ -63,6 +65,11 @@ if __name__ == "__main__":
 
     for i in input_combinations:
         print(halfadder.feed_forward(i))
+
+    assert halfadder.feed_forward([0, 0]) == [0, 0], "Should be [0, 0]"
+    assert halfadder.feed_forward([0, 1]) == [1, 0], "Should be [1, 0]"
+    assert halfadder.feed_forward([1, 0]) == [1, 0], "Should be [1, 0]"
+    assert halfadder.feed_forward([1, 1]) == [0, 1], "Should be [0, 1]"
 
     print("Empty network of 3 layers: ")
     # showcasing empty_network() and __str__()

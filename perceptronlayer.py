@@ -12,6 +12,15 @@ class Perceptronlayer:
         for i in perceptrons:
             self.layer.append(perceptron.Perceptron(i[0], i[1]))  # i[0] are the weights of each perceptron, i[1] are the biases
 
+    def activate(self, inputs):
+        """Given an input, gives the output of the network.
+        The input is used to calculate the output of each perceptron until you
+        have a list of all the outputs of the layer."""
+        outputs = []
+        for perceptron in self.layer:
+            outputs.append(perceptron.activate(inputs))
+        return outputs
+
     def __str__(self):
         """Rerurns a string that tell the information of a whole layer
         Gives the bias and weights of each perceptron of the layer and
